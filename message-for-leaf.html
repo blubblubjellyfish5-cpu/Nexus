@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>A Message for Leaf 🍃</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #f0a35c;
+      --rose: #e8677a;
+      --dusk: #9b5de5;
+      --midnight: #1a0a2e;
+      --glass: rgba(255,255,255,0.07);
+      --glass-border: rgba(255,255,255,0.15);
+    }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(
+        160deg,
+        #0d0521 0%,
+        #1f0b3a 20%,
+        #4a1942 38%,
+        #8b2a4a 52%,
+        #c4553a 65%,
+        #e8852a 78%,
+        #f0b060 90%,
+        #ffd580 100%
+      );
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Sky glow layers */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 40% at 50% 100%, rgba(240,163,92,0.25) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 30% at 30% 80%, rgba(232,103,122,0.2) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 70% 20%, rgba(155,93,229,0.15) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Floating orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+    .orb-1 { width: 350px; height: 350px; background: rgba(232,103,122,0.18); top: -80px; right: -80px; animation-duration: 14s; }
+    .orb-2 { width: 250px; height: 250px; background: rgba(240,163,92,0.2); bottom: -60px; left: -60px; animation-duration: 10s; animation-delay: -4s; }
+    .orb-3 { width: 180px; height: 180px; background: rgba(155,93,229,0.2); top: 40%; left: 10%; animation-duration: 16s; animation-delay: -7s; }
+
+    @keyframes drift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(30px, 20px) scale(1.1); }
+    }
+
+    /* Stars */
+    .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s ease-in-out infinite alternate;
+    }
+    @keyframes twinkle {
+      from { opacity: 0.1; transform: scale(1); }
+      to   { opacity: 0.8; transform: scale(1.4); }
+    }
+
+    /* Card */
+    .card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 480px;
+      background: rgba(15, 5, 30, 0.55);
+      backdrop-filter: blur(28px) saturate(1.4);
+      -webkit-backdrop-filter: blur(28px) saturate(1.4);
+      border: 1px solid var(--glass-border);
+      border-radius: 28px;
+      padding: 3rem 2.5rem 2.5rem;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 30px 80px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+      animation: riseIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0;
+    }
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(40px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .leaf-icon {
+      font-size: 2.4rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      animation: leafFloat 4s ease-in-out infinite;
+    }
+    @keyframes leafFloat {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50%       { transform: translateY(-8px) rotate(3deg); }
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: 2rem;
+      text-align: center;
+      line-height: 1.25;
+      color: #fff;
+      letter-spacing: 0.01em;
+      margin-bottom: 0.4rem;
+    }
+    h1 em {
+      font-style: italic;
+      background: linear-gradient(90deg, var(--gold), var(--rose));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.38);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 2.2rem;
+    }
+
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--rose), transparent);
+      margin: 0 auto 2.2rem;
+    }
+
+    .field {
+      margin-bottom: 1.4rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 0.6rem;
+      font-weight: 400;
+    }
+
+    input, textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 0.9rem 1.1rem;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+      resize: none;
+    }
+    input::placeholder, textarea::placeholder {
+      color: rgba(255,255,255,0.22);
+      font-style: italic;
+    }
+    input:focus, textarea:focus {
+      border-color: rgba(240,163,92,0.55);
+      background: rgba(255,255,255,0.08);
+      box-shadow: 0 0 0 3px rgba(240,163,92,0.12);
+    }
+    textarea { height: 130px; }
+
+    .send-btn {
+      width: 100%;
+      margin-top: 0.8rem;
+      padding: 1rem;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #e8677a 0%, #c4553a 40%, #e8852a 100%);
+      color: #fff;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      box-shadow: 0 8px 30px rgba(232,103,122,0.35);
+    }
+    .send-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .send-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(232,103,122,0.45); }
+    .send-btn:hover:not(:disabled)::before { opacity: 1; }
+    .send-btn:active:not(:disabled) { transform: translateY(0); }
+    .send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* Success Popup */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 3, 20, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s;
+    }
+    .overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .popup {
+      background: rgba(20, 8, 40, 0.9);
+      border: 1px solid rgba(240,163,92,0.3);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      max-width: 320px;
+      width: 90%;
+      transform: scale(0.8) translateY(20px);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+    }
+    .overlay.show .popup {
+      transform: scale(1) translateY(0);
+    }
+
+    .popup-icon { font-size: 3rem; margin-bottom: 1rem; animation: popBounce 0.6s 0.3s both; }
+    @keyframes popBounce {
+      0%   { transform: scale(0) rotate(-20deg); }
+      70%  { transform: scale(1.2) rotate(5deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+
+    .popup h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      font-weight: 300;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+    .popup p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .popup p span {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .close-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      color: rgba(255,255,255,0.7);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      padding: 0.6rem 1.6rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .close-btn:hover { background: rgba(255,255,255,0.14); color: #fff; }
+
+    .error-msg {
+      font-size: 0.8rem;
+      color: #f87171;
+      text-align: center;
+      margin-top: 0.8rem;
+      display: none;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 1.8rem;
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.18);
+      letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Stars -->
+  <div class="stars" id="stars"></div>
+
+  <!-- Floating orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- Card -->
+  <div class="card">
+    <div class="leaf-icon">🍃</div>
+    <h1>Leave a message<br/>for <em>Leaf</em></h1>
+    <p class="subtitle">From wherever you are</p>
+    <div class="divider"></div>
+
+    <div class="field">
+      <label>Who are you for Leaf?</label>
+      <input type="text" id="nameInput" placeholder="A friend, a stranger, a star..." maxlength="80"/>
+    </div>
+
+    <div class="field">
+      <label>Your Message</label>
+      <textarea id="msgInput" placeholder="Say whatever's on your heart..."></textarea>
+    </div>
+
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+      ✦ Send into the universe
+    </button>
+
+    <p class="error-msg" id="errorMsg">Something drifted off course. Try again ✦</p>
+
+    <p class="footer">🌅 messages travel directly to leaf</p>
+  </div>
+
+  <!-- Popup -->
+  <div class="overlay" id="overlay" onclick="closePopup(event)">
+    <div class="popup">
+      <div class="popup-icon">🌅</div>
+      <h2>Message Sent!</h2>
+      <p>Leaf will find your words,<br/><span id="senderName">dear soul</span>.</p>
+      <button class="close-btn" onclick="closePopup()">Close ✦</button>
+    </div>
+  </div>
+
+  <script>
+    // Stars
+    const starsEl = document.getElementById('stars');
+    for (let i = 0; i < 60; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2.5 + 0.5;
+      s.style.cssText = `
+        width:${size}px; height:${size}px;
+        top:${Math.random()*100}%;
+        left:${Math.random()*100}%;
+        animation-delay:${Math.random()*4}s;
+        animation-duration:${2+Math.random()*3}s;
+        opacity:${Math.random()*0.5};
+      `;
+      starsEl.appendChild(s);
+    }
+
+    // Supabase
+    const { createClient } = supabase;
+    const sb = createClient(
+      'https://jpmnelsiltgrtjmhpixy.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpwbW5lbHNpbHRncnRqbWhwaXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NDkwOTAsImV4cCI6MjA4OTMyNTA5MH0.MKgf_963FuYykq9NsLVUr-0I3_y9guMdWcKRf_K_vCo'
+    );
+
+    async function sendMessage() {
+      const name = document.getElementById('nameInput').value.trim();
+      const message = document.getElementById('msgInput').value.trim();
+      const btn = document.getElementById('sendBtn');
+      const err = document.getElementById('errorMsg');
+
+      err.style.display = 'none';
+
+      if (!name || !message) {
+        err.textContent = 'Please fill both fields before sending ✦';
+        err.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = '✦ Sending...';
+
+      const { error } = await sb.from('Messages').insert([{ name, message }]);
+
+      if (error) {
+        err.textContent = 'Something drifted off course. Try again ✦';
+        err.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = '✦ Send into the universe';
+      } else {
+        document.getElementById('senderName').textContent = name;
+        document.getElementById('overlay').classList.add('show');
+        document.getElementById('nameInput').value = '';
+        document.getElementById('msgInput').value = '';
+        btn.disabled = false;
+        btn.textContent = '✦ Send into the universe';
+      }
+    }
+
+    function closePopup(e) {
+      if (!e || e.target === document.getElementById('overlay') || !e.target.closest) {
+        document.getElementById('overlay').classList.remove('show');
+      } else if (!e.target.closest('.popup')) {
+        document.getElementById('overlay').classList.remove('show');
+      }
+    }
+
+    // Enter to submit (Ctrl+Enter in textarea)
+    document.getElementById('nameInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); document.getElementById('msgInput').focus(); }
+    });
+    document.getElementById('msgInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && e.ctrlKey) sendMessage();
+    });
+  </script>
+</body>
+</html>
