@@ -557,10 +557,7 @@
       if (!file) return;
 
       // Max 10MB check
-      if (file.size > 10 * 1024 * 1024) {
-        showError('Image too large. Please choose one under 10MB ✦');
-        return;
-      }
+  
 
       selectedFile = file;
 
